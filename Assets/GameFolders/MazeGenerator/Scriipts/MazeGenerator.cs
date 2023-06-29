@@ -10,6 +10,7 @@ namespace DreamGuardian.Maze
 {
     public class MazeGenerator : MonoBehaviour
     {
+        [SerializeField] private GameObject groundPrefab;
         [SerializeField] private MazeNode nodePrefab;
         [SerializeField] private Vector2Int mazeSize;
         
@@ -18,10 +19,15 @@ namespace DreamGuardian.Maze
         {
             ClearMaze();
 
-            GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            plane.transform.parent = transform;
-            plane.transform.localScale = new Vector3(mazeSize.x, 1, mazeSize.y) / 10f;
-            plane.transform.localPosition -= new Vector3(0.5f, 0, 0.5f);
+            GameObject parentObject = new GameObject();
+            Transform parentTransform = parentObject.transform;
+            parentTransform.parent = transform;
+            parentObject.name = $"Maze {mazeSize.x}x{mazeSize.y}";
+            
+            GameObject ground = PrefabUtility.InstantiatePrefab(groundPrefab, parentTransform) as GameObject;
+            ground.transform.parent = parentTransform;
+            ground.transform.localScale = new Vector3(mazeSize.x, 1, mazeSize.y) / 10f;
+            ground.transform.localPosition = Vector3.zero;
             
             List<MazeNode> nodes = new List<MazeNode>();
 
@@ -30,8 +36,8 @@ namespace DreamGuardian.Maze
             {
                 for (int y = 0; y < mazeSize.y; y++)
                 {
-                    Vector3 nodePos = new Vector3(x - (mazeSize.x / 2f), 0, y - (mazeSize.y / 2f));
-                    MazeNode newNode = PrefabUtility.InstantiatePrefab(nodePrefab, transform) as MazeNode;
+                    Vector3 nodePos = new Vector3(x - (mazeSize.x / 2f) + 0.5f, 0, y - (mazeSize.y / 2f) + 0.5f);
+                    MazeNode newNode = PrefabUtility.InstantiatePrefab(nodePrefab, parentTransform) as MazeNode;
                     newNode.transform.position = nodePos;
                     nodes.Add(newNode);
                 }
