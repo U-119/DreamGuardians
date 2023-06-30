@@ -10,5 +10,14 @@ namespace DreamGuardian.Core
             Current,
             Completed
         }
+
+        public enum Element
+        {
+            None,
+            Water,
+            Fire,
+            Earth,
+            Air
+        }
     }
 }
